@@ -58,3 +58,18 @@ CREATE TABLE fact_patient_visit (
     satisfaction INT,
     visit_count INT DEFAULT 1
 );
+
+SELECT current_database();
+
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public';
+
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
+ORDER BY table_name;
+
+SELECT COUNT(*)
+FROM stg_healthcare;
+
