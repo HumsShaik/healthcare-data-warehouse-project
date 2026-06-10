@@ -1,49 +1,44 @@
 import streamlit as st
 import pandas as pd
-from db_connection import engine
+from data_loader import load_data
 
-st.set_page_config(page_title="SQL Insights", page_icon="🧾", layout="wide")
+st.set_page_config(
+    page_title="SQL Insights",
+    page_icon="🧾",
+    layout="wide"
+)
 
 st.title("🧾 SQL Insights")
 
-st.markdown("This page displays advanced SQL outputs from the healthcare data warehouse.")
+df = load_data()
 
-query = """
-WITH condition_costs AS (
-    SELECT
-        dc.condition_name,
-        COUNT(*) AS total_visits,
-        SUM(fpv.cost) AS total_cost,
-        AVG(fpv.cost) AS avg_cost,
-        AVG(fpv.length_of_stay) AS avg_los
-    FROM fact_patient_visit fpv
-    JOIN dim_condition dc
-        ON fpv.condition_key = dc.condition_key
-    GROUP BY dc.condition_name
+condition_costs = (
+    df.groupby("condition_name")
+    .agg(
+        total_visits=("visit_key", "count"),
+        total_cost=("cost", "sum"),
+        avg_cost=("cost", "mean"),
+        avg_los=("length_of_stay", "mean")
+    )
+    .reset_index()
+    .sort_values("total_cost", ascending=False)
 )
-SELECT *
-FROM condition_costs
-ORDER BY total_cost DESC;
-"""
 
-df = pd.read_sql(query, engine)
+st.subheader("Condition Cost Analysis")
 
-st.subheader("Condition Cost Analysis using CTE")
-st.dataframe(df, use_container_width=True)
+st.dataframe(
+    condition_costs,
+    use_container_width=True
+)
 
-rank_query = """
-SELECT
-    visit_key,
-    patient_key,
-    cost,
-    RANK() OVER (
-        ORDER BY cost DESC
-    ) AS cost_rank
-FROM fact_patient_visit
-LIMIT 20;
-"""
+top_cost = (
+    df.sort_values("cost", ascending=False)
+    .head(20)
+)
 
-rank_df = pd.read_sql(rank_query, engine)
+st.subheader("Top 20 Most Expensive Visits")
 
-st.subheader("Top Cost Visits using Window Function")
-st.dataframe(rank_df, use_container_width=True)
+st.dataframe(
+    top_cost,
+    use_container_width=True
+)

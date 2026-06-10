@@ -1,44 +1,45 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from db_connection import engine
+from data_loader import load_data
 
-st.set_page_config(page_title="Clinical Analysis", page_icon="📊", layout="wide")
+st.set_page_config(
+    page_title="Clinical Analysis",
+    page_icon="📊",
+    layout="wide"
+)
 
 st.title("📊 Clinical Analysis")
 
-condition_query = """
-SELECT
-    dc.condition_name,
-    COUNT(*) AS total_visits,
-    AVG(fpv.length_of_stay) AS avg_los
-FROM fact_patient_visit fpv
-JOIN dim_condition dc
-    ON fpv.condition_key = dc.condition_key
-GROUP BY dc.condition_name
-ORDER BY total_visits DESC;
-"""
+df = load_data()
 
-condition_df = pd.read_sql(condition_query, engine)
+condition_df = (
+    df.groupby("condition_name")
+    .agg(
+        total_visits=("visit_key", "count"),
+        avg_los=("length_of_stay", "mean")
+    )
+    .reset_index()
+)
 
 col1, col2 = st.columns(2)
 
 fig1 = px.bar(
-    condition_df,
+    condition_df.sort_values("total_visits"),
     x="total_visits",
     y="condition_name",
     orientation="h",
     title="Top Conditions by Visits"
 )
-fig1.update_layout(yaxis={"categoryorder": "total ascending"})
+
 col1.plotly_chart(fig1, use_container_width=True)
 
 fig2 = px.bar(
-    condition_df.sort_values("avg_los", ascending=False),
+    condition_df.sort_values("avg_los"),
     x="avg_los",
     y="condition_name",
     orientation="h",
     title="Average Length of Stay by Condition"
 )
-fig2.update_layout(yaxis={"categoryorder": "total ascending"})
+
 col2.plotly_chart(fig2, use_container_width=True)
