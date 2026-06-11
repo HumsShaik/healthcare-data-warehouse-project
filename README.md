@@ -357,7 +357,7 @@ https://public.tableau.com/app/profile/humera.anjum/viz/healthcare-data-warehous
 
 Streamlit Dashboard Live Link : 
 
-https://healthcare-data-warehouse-project.streamlit.app/Project_Overview
+https://healthcare-data-warehouse-project.streamlit.app/
 
 ---
 
