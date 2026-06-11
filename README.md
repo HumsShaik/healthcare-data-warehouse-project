@@ -348,10 +348,10 @@ https://public.tableau.com/app/profile/humera.anjum/viz/healthcare-data-warehous
 
 ## Streamlit Dashboard
 
-![Executive Summary](images/executive_summary.png)
-![Clinical Analysis](images/clinical_analysis.png)
-![Financial Analysis](images/financial_analysis.png)
-![SQL Insights](images/sql_insights.png)
+![Executive Summary](streamlit_app/images/executive_summary.png)
+![Clinical Analysis](streamlit_app/images/clinical_analysis.png)
+![Financial Analysis](streamlit_app/images/financial_analysis.png)
+![SQL Insights](streamlit_app/images/sql_insights.png)
 
 ---
 
