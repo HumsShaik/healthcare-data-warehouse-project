@@ -404,7 +404,7 @@ healthcare-data-warehouse-project/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/healthcare-data-warehouse-project.git
+git clone https://github.com/HumsShaik/healthcare-data-warehouse-project.git
 ```
 
 ### Create Virtual Environment
